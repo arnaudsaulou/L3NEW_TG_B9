@@ -2,15 +2,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class L3NEW_TG_B9_Graph {
+
+    //region Variables
+
     private int nodesNumber;
     private int directedEdgesNumber;
-    private HashMap<String,L3NEW_TG_B9_Node> nodesHashMap;
+    private HashMap<String, L3NEW_TG_B9_Node> nodesHashMap;
 
-    public L3NEW_TG_B9_Graph(int nodesNumber, int directedEdgesNumber, HashMap<String,L3NEW_TG_B9_Node> nodesHashMap) {
-        this.nodesNumber = nodesNumber;
-        this.directedEdgesNumber = directedEdgesNumber;
-        this.nodesHashMap = nodesHashMap;
-    }
+    //endregion
+
+    //region Constructor
 
     public L3NEW_TG_B9_Graph() {
         this.nodesNumber = 0;
@@ -18,50 +19,115 @@ public class L3NEW_TG_B9_Graph {
         this.nodesHashMap = new HashMap<>();
     }
 
-    public boolean isNodeAlreadyRegister(String researchNodeLabel){
-        return this.nodesHashMap.containsKey(researchNodeLabel);
+    //endregion
+
+    //region Utils
+
+    public boolean isNodeNotAlreadyRegister(String researchNodeLabel) {
+        return !this.nodesHashMap.containsKey(researchNodeLabel);
     }
 
-    public L3NEW_TG_B9_Node getSpecificNodeFromLabel(String nodeLabel){
+    public void addNodeToGraph(L3NEW_TG_B9_Node newNode) {
+        this.nodesHashMap.put(newNode.getLabel(), newNode);
+    }
+
+    public L3NEW_TG_B9_Node getSpecificNodeFromLabel(String nodeLabel) {
         return this.nodesHashMap.get(nodeLabel);
     }
 
-    public int getNodesNumber() {
-        return nodesNumber;
+    private boolean isDestinationNodeSuccessor(ArrayList<L3NEW_TG_B9_Node> listSuccessor, L3NEW_TG_B9_Node destinationNode) {
+        return listSuccessor.contains(destinationNode);
     }
 
-    public void setNodesNumber(int nodesNumber) {
-        this.nodesNumber = nodesNumber;
+    private void fillAdjacencyOfANode(ArrayList<L3NEW_TG_B9_Node> listSuccessor) {
+
+        //For each destination node
+        for (String destinationNodeLabel : this.nodesHashMap.keySet()) {
+            L3NEW_TG_B9_Node destinationNode = this.getSpecificNodeFromLabel(destinationNodeLabel);
+
+            //Check if destinationNode is a successor of the originNode
+            if (isDestinationNodeSuccessor(listSuccessor, destinationNode)) {
+                System.out.print(String.format("%5s", "V"));
+            } else {
+                System.out.print(String.format("%5s", "F"));
+            }
+        }
+    }
+
+    private void displayColumnsHeadersMatrix() {
+        System.out.print(" ");  //To align columns header with columns
+
+        //Display columns header
+        for (String nodeLabel : this.nodesHashMap.keySet()) {
+            System.out.print(String.format("%5s", nodeLabel));
+        }
+    }
+
+    public void displayAdjacencyMatrix() {
+
+        this.displayColumnsHeadersMatrix();
+
+        //For each origin node
+        for (String originNodeLabel : this.nodesHashMap.keySet()) {
+
+            //Display row header
+            System.out.print("\n" + originNodeLabel);
+
+            //Get list successor
+            ArrayList<L3NEW_TG_B9_Node> listSuccessor = this.getSpecificNodeFromLabel(originNodeLabel).getListSuccessor();
+
+            fillAdjacencyOfANode(listSuccessor);
+        }
+    }
+
+    //endregion
+
+    //region Getter
+
+    public int getNodesNumber() {
+        return nodesNumber;
     }
 
     public int getDirectedEdgesNumber() {
         return directedEdgesNumber;
     }
 
-    public void setDirectedEdgesNumber(int directedEdgesNumber) {
-        this.directedEdgesNumber = directedEdgesNumber;
-    }
-
     public HashMap<String, L3NEW_TG_B9_Node> getNodesHashMap() {
         return nodesHashMap;
+    }
+
+    //endregion
+
+    //region Setter
+
+    public void setNodesNumber(int nodesNumber) {
+        this.nodesNumber = nodesNumber;
+    }
+
+    public void setDirectedEdgesNumber(int directedEdgesNumber) {
+        this.directedEdgesNumber = directedEdgesNumber;
     }
 
     public void setNodesList(HashMap<String, L3NEW_TG_B9_Node> nodesHashMap) {
         this.nodesHashMap = nodesHashMap;
     }
 
-    public void addNodeToGraph(L3NEW_TG_B9_Node newNode){
-        this.nodesHashMap.put(newNode.getLabel(), newNode);
-    }
+    //endregion
+
+    //region Override
 
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(nodesNumber).append("\n");
-        stringBuilder.append(directedEdgesNumber).append("\n");
-        for (String key: this.nodesHashMap.keySet()) {
+        stringBuilder.append("\n");
+        stringBuilder.append("Nombre de sommet(s) : ").append(nodesNumber).append("\n");
+        stringBuilder.append("Nombre d'arc(s) : ").append(directedEdgesNumber).append("\n");
+        stringBuilder.append("Origine   Poids   Destination").append("\n");
+        for (String key : this.nodesHashMap.keySet()) {
             stringBuilder.append(this.nodesHashMap.get(key));
         }
         return stringBuilder.toString();
     }
+
+    //endregion
 }

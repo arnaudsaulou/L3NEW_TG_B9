@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -14,8 +13,14 @@ public class L3NEW_TG_B9_ImportGraph {
     private static final String GRAPH_EXTENSION = ".txt";
     //endregion
 
+    //region Constructor
+
     public L3NEW_TG_B9_ImportGraph() {
     }
+
+    //endregion
+
+    //region Utils
 
     public static L3NEW_TG_B9_Graph importGraphProcedure() {
         Scanner scanner = new Scanner(System.in);
@@ -42,7 +47,6 @@ public class L3NEW_TG_B9_ImportGraph {
 
     private static L3NEW_TG_B9_Graph importAGraph(int graphNumber) throws IOException {
 
-        StringBuilder stringBuilder = new StringBuilder();
         BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(GRAPH_PATH + graphNumber + GRAPH_EXTENSION));
         int lineNumber = 0;
         String line = null;
@@ -58,37 +62,35 @@ public class L3NEW_TG_B9_ImportGraph {
                 newGraph.setNodesNumber(Integer.parseInt(line));
             }
 
-            stringBuilder.append(line).append("\n");
             lineNumber++;
         }
 
         return newGraph;
     }
 
-
     private static void extractDataFromRowLine(String line, L3NEW_TG_B9_Graph newGraph) {
         String[] edgeData = line.split(" ");
 
-        L3NEW_TG_B9_Node originNode = null;
-        L3NEW_TG_B9_Node destinationNode = null;
-
-        //If the node is already in the list
-        if (!newGraph.isNodeAlreadyRegister(edgeData[0])) {
-            originNode = new L3NEW_TG_B9_Node(edgeData[0]);
-            newGraph.addNodeToGraph(originNode);
-        } else {
-            originNode = newGraph.getSpecificNodeFromLabel(edgeData[0]);
-        }
-
-        if (!newGraph.isNodeAlreadyRegister(edgeData[1])) {
-            destinationNode = new L3NEW_TG_B9_Node(edgeData[1]);
-            newGraph.addNodeToGraph(destinationNode);
-        } else {
-            destinationNode = newGraph.getSpecificNodeFromLabel(edgeData[1]);
-        }
+        L3NEW_TG_B9_Node originNode = getSpecificNodeOfGraphFromString(newGraph, edgeData[0]);
+        L3NEW_TG_B9_Node destinationNode = getSpecificNodeOfGraphFromString(newGraph, edgeData[1]);
 
         L3NEW_TG_B9_DirectedEdge newEdge = new L3NEW_TG_B9_DirectedEdge(originNode, destinationNode, Integer.parseInt(edgeData[2]));
-        originNode.getListSuccessor().add(newEdge);
+        originNode.addExitingDirectedEdges(newEdge);
 
     }
+
+    private static L3NEW_TG_B9_Node getSpecificNodeOfGraphFromString(L3NEW_TG_B9_Graph newGraph, String data) {
+        L3NEW_TG_B9_Node node;
+
+        //If the node is not already in the list, add it, else get it
+        if (newGraph.isNodeNotAlreadyRegister(data)) {
+            node = new L3NEW_TG_B9_Node(data);
+            newGraph.addNodeToGraph(node);
+        } else {
+            node = newGraph.getSpecificNodeFromLabel(data);
+        }
+        return node;
+    }
+
+    //endregion
 }
