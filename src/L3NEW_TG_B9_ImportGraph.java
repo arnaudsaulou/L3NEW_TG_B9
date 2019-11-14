@@ -74,9 +74,7 @@ public class L3NEW_TG_B9_ImportGraph {
         L3NEW_TG_B9_Node originNode = getSpecificNodeOfGraphFromString(newGraph, edgeData[0]);
         L3NEW_TG_B9_Node destinationNode = getSpecificNodeOfGraphFromString(newGraph, edgeData[1]);
 
-        L3NEW_TG_B9_DirectedEdge newEdge = new L3NEW_TG_B9_DirectedEdge(originNode, destinationNode, Integer.parseInt(edgeData[2]));
-        originNode.addExitingDirectedEdges(newEdge);
-
+        originNode.addEdge(destinationNode, Integer.parseInt(edgeData[2]));
     }
 
     private static L3NEW_TG_B9_Node getSpecificNodeOfGraphFromString(L3NEW_TG_B9_Graph newGraph, String data) {

@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class L3NEW_TG_B9_Graph {
 
@@ -35,11 +37,11 @@ public class L3NEW_TG_B9_Graph {
         return this.nodesHashMap.get(nodeLabel);
     }
 
-    private boolean isDestinationNodeSuccessor(ArrayList<L3NEW_TG_B9_Node> listSuccessor, L3NEW_TG_B9_Node destinationNode) {
+    private boolean isDestinationNodeSuccessor(Set<L3NEW_TG_B9_Node> listSuccessor, L3NEW_TG_B9_Node destinationNode) {
         return listSuccessor.contains(destinationNode);
     }
 
-    private void fillAdjacencyOfANode(ArrayList<L3NEW_TG_B9_Node> listSuccessor) {
+    private void fillAdjacencyOfANode(Set<L3NEW_TG_B9_Node> listSuccessor) {
 
         //For each destination node
         for (String destinationNodeLabel : this.nodesHashMap.keySet()) {
@@ -54,8 +56,14 @@ public class L3NEW_TG_B9_Graph {
         }
     }
 
+    private void fillValueOfANode(L3NEW_TG_B9_Node originNode) {
+
+        //For each destination node
+
+    }
+
     private void displayColumnsHeadersMatrix() {
-        System.out.print(" ");  //To align columns header with columns
+        System.out.print("\n ");  //To align columns header with columns
 
         //Display columns header
         for (String nodeLabel : this.nodesHashMap.keySet()) {
@@ -74,10 +82,33 @@ public class L3NEW_TG_B9_Graph {
             System.out.print("\n" + originNodeLabel);
 
             //Get list successor
-            ArrayList<L3NEW_TG_B9_Node> listSuccessor = this.getSpecificNodeFromLabel(originNodeLabel).getListSuccessor();
+            Set<L3NEW_TG_B9_Node> listSuccessor = this.getSpecificNodeFromLabel(originNodeLabel).getListSuccessor();
 
             fillAdjacencyOfANode(listSuccessor);
         }
+
+        System.out.println();
+    }
+
+    public void displayValuesMatrix() {
+
+        this.displayColumnsHeadersMatrix();
+
+        //For each origin node
+        for (String originNodeLabel : this.nodesHashMap.keySet()) {
+
+            //Display row header
+
+            System.out.print("\n" + originNodeLabel);
+
+            //Get originNode
+            L3NEW_TG_B9_Node originNode = this.getSpecificNodeFromLabel(originNodeLabel);
+
+            fillValueOfANode(originNode);
+        }
+
+        System.out.println();
+
     }
 
     //endregion
@@ -123,9 +154,11 @@ public class L3NEW_TG_B9_Graph {
         stringBuilder.append("Nombre de sommet(s) : ").append(nodesNumber).append("\n");
         stringBuilder.append("Nombre d'arc(s) : ").append(directedEdgesNumber).append("\n");
         stringBuilder.append("Origine   Poids   Destination").append("\n");
+
         for (String key : this.nodesHashMap.keySet()) {
             stringBuilder.append(this.nodesHashMap.get(key));
         }
+
         return stringBuilder.toString();
     }
 

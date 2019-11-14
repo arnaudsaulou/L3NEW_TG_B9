@@ -8,13 +8,13 @@ public class L3NEW_TG_B9_Main {
         graph = L3NEW_TG_B9_ImportGraph.importGraphProcedure();
 
         //Print the graph read
-        System.out.println(graph);
+        System.out.print(graph);
 
         //Print adjacency matrix
         graph.displayAdjacencyMatrix();
 
         //Print value matrix
-        //TODO
+        graph.displayValuesMatrix();
 
     }
 }

@@ -1,14 +1,16 @@
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class L3NEW_TG_B9_Node {
 
     //region Variables
 
     private String label;
-    private ArrayList<L3NEW_TG_B9_DirectedEdge> exitingDirectedEdges;
-    private ArrayList<L3NEW_TG_B9_DirectedEdge> incomingDirectedEdges;
-    private ArrayList<L3NEW_TG_B9_Node> listPredecessor;
-    private ArrayList<L3NEW_TG_B9_Node> listSuccessor;
+    private Set<L3NEW_TG_B9_Node> listPredecessor;
+    private Set<L3NEW_TG_B9_Node> listSuccessor;
+    private HashMap<L3NEW_TG_B9_Node, Integer> listEdges;
 
     //endregion
 
@@ -16,24 +18,18 @@ public class L3NEW_TG_B9_Node {
 
     public L3NEW_TG_B9_Node(String label) {
         this.label = label;
-        this.exitingDirectedEdges = new ArrayList<>();
-        this.incomingDirectedEdges =  new ArrayList<>();
-        this.listSuccessor =  new ArrayList<>();
-        this.listPredecessor = new ArrayList<>();
+        this.listSuccessor = new HashSet<>();
+        this.listPredecessor = new HashSet<>();
+        this.listEdges = new HashMap<>();
     }
 
     //endregion
 
     //region Utils
 
-    public void addExitingDirectedEdges(L3NEW_TG_B9_DirectedEdge newEdge){
-        this.exitingDirectedEdges.add(newEdge);
-        this.listSuccessor.add(newEdge.getDestinationNode());
-    }
-
-    public void addIncomingDirectedEdges(L3NEW_TG_B9_DirectedEdge newEdge){
-        this.incomingDirectedEdges.add(newEdge);
-        this.listSuccessor.add(newEdge.getOriginNode());
+    public void addEdge(L3NEW_TG_B9_Node destinationNode, int weight) {
+        this.listEdges.put(destinationNode, weight);
+        this.listSuccessor.add(destinationNode);
     }
 
     //endregion
@@ -44,20 +40,16 @@ public class L3NEW_TG_B9_Node {
         return label;
     }
 
-    public ArrayList<L3NEW_TG_B9_DirectedEdge> getExitingDirectedEdges() {
-        return exitingDirectedEdges;
-    }
-
-    public ArrayList<L3NEW_TG_B9_DirectedEdge> getIncomingDirectedEdges() {
-        return incomingDirectedEdges;
-    }
-
-    public ArrayList<L3NEW_TG_B9_Node> getListPredecessor() {
+    public Set<L3NEW_TG_B9_Node> getListPredecessor() {
         return listPredecessor;
     }
 
-    public ArrayList<L3NEW_TG_B9_Node> getListSuccessor() {
+    public Set<L3NEW_TG_B9_Node> getListSuccessor() {
         return listSuccessor;
+    }
+
+    public HashMap<L3NEW_TG_B9_Node, Integer> getListEdges() {
+        return listEdges;
     }
 
     //endregion
@@ -68,20 +60,16 @@ public class L3NEW_TG_B9_Node {
         this.label = label;
     }
 
-    public void setExitingDirectedEdges(ArrayList<L3NEW_TG_B9_DirectedEdge> exitingDirectedEdges) {
-        this.exitingDirectedEdges = exitingDirectedEdges;
-    }
-
-    public void setIncomingDirectedEdges(ArrayList<L3NEW_TG_B9_DirectedEdge> incomingDirectedEdges) {
-        this.incomingDirectedEdges = incomingDirectedEdges;
-    }
-
-    public void setListPredecessor(ArrayList<L3NEW_TG_B9_Node> listPredecessor) {
+    public void setListPredecessor(Set<L3NEW_TG_B9_Node> listPredecessor) {
         this.listPredecessor = listPredecessor;
     }
 
-    public void setListSuccessor(ArrayList<L3NEW_TG_B9_Node> listSuccessor) {
+    public void setListSuccessor(Set<L3NEW_TG_B9_Node> listSuccessor) {
         this.listSuccessor = listSuccessor;
+    }
+
+    public void setListEdges(HashMap<L3NEW_TG_B9_Node, Integer> listEdges) {
+        this.listEdges = listEdges;
     }
 
     //endregion
@@ -91,11 +79,19 @@ public class L3NEW_TG_B9_Node {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (L3NEW_TG_B9_DirectedEdge directedEdge: this.exitingDirectedEdges) {
-            stringBuilder.append(directedEdge).append('\n');
+
+        for (L3NEW_TG_B9_Node successor : this.listEdges.keySet()) {
+            stringBuilder.append(this.label);
+            stringBuilder.append(" == ");
+            stringBuilder.append(this.listEdges.get(successor));
+            stringBuilder.append(" => ");
+            stringBuilder.append(successor.label);
+            stringBuilder.append("\n");
         }
+
         return stringBuilder.toString();
     }
+
 
     //endregion
 }
