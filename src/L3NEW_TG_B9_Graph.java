@@ -34,19 +34,84 @@ public class L3NEW_TG_B9_Graph {
         return this.nodesHashMap.get(nodeLabel);
     }
 
+
+    private void fillAdjacencyOfANode(L3NEW_TG_B9_Node originNode) {
+
+        //For each destination node
+        for (L3NEW_TG_B9_Node destinationNode : this.nodesHashMap.values()) {
+
+            //Check if destinationNode is a successor of the originNode
+            if (originNode.isNodeASuccessor(destinationNode)) {
+                System.out.print(String.format("%5s", "V"));
+            } else {
+                System.out.print(String.format("%5s", "F"));
+            }
+        }
+    }
+
+    private void fillValueOfANode(L3NEW_TG_B9_Node originNode) {
+
+        //For each destination node
+        for (L3NEW_TG_B9_Node destinationNode : this.nodesHashMap.values()) {
+
+            //Check if destinationNode is a successor of the originNode
+            if (originNode.isNodeASuccessor(destinationNode)) {
+                System.out.print(String.format("%5d", originNode.getWeightEdge(destinationNode)));
+            } else {
+                System.out.print(String.format("%5d", 0));
+            }
+        }
+    }
+
+    private void displayColumnsHeadersMatrix() {
+        System.out.print(" ");  //To align columns header with columns
+
+        //Display columns header
+        for (String nodeLabel : this.nodesHashMap.keySet()) {
+            System.out.print(String.format("%5s", nodeLabel));
+        }
+    }
+
     public void displayAdjacencyMatrix() {
 
         System.out.print("\n - - - - - Matrice d'adjacence - - - - - \n");
 
-        //TODO Yakout
+        this.displayColumnsHeadersMatrix();
 
+        //For each origin node
+        for (String originNodeLabel : this.nodesHashMap.keySet()) {
+
+            //Display row header
+            System.out.print("\n" + originNodeLabel);
+
+            //Get list successor
+            L3NEW_TG_B9_Node originNode = this.getSpecificNodeFromLabel(originNodeLabel);
+
+            fillAdjacencyOfANode(originNode);
+        }
+
+        System.out.println();
     }
 
     public void displayValuesMatrix() {
 
         System.out.print("\n - - - - - Matrice de valeures - - - - - \n");
 
-        //TODO Rania
+        this.displayColumnsHeadersMatrix();
+
+        //For each origin node
+        for (String originNodeLabel : this.nodesHashMap.keySet()) {
+
+            //Display row header
+            System.out.print("\n" + originNodeLabel);
+
+            //Get originNode
+            L3NEW_TG_B9_Node originNode = this.getSpecificNodeFromLabel(originNodeLabel);
+
+            fillValueOfANode(originNode);
+        }
+
+        System.out.println();
     }
 
     //endregion
