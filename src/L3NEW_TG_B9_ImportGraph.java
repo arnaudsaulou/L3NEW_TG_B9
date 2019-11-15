@@ -25,6 +25,8 @@ public class L3NEW_TG_B9_ImportGraph {
     public static L3NEW_TG_B9_Graph importGraphProcedure() {
         Scanner scanner = new Scanner(System.in);
 
+        System.out.print("\n - - - - - Importation du graphe - - - - - \n");
+
         //Continue to ask the user a valid number (only number && existing file)
         while (true) {
             try {
@@ -55,11 +57,11 @@ public class L3NEW_TG_B9_ImportGraph {
         while ((line = bufferedReader.readLine()) != null) {
 
             if (lineNumber >= 2) {
-                extractDataFromRowLine(line, newGraph);
+                graphParser(line, newGraph);
             } else if (lineNumber >= 1) {
-                newGraph.setDirectedEdgesNumber(Integer.parseInt(line));
+                newGraph.setNumberOfEdges(Integer.parseInt(line));
             } else {
-                newGraph.setNodesNumber(Integer.parseInt(line));
+                newGraph.setNumberOfNode(Integer.parseInt(line));
             }
 
             lineNumber++;
@@ -68,7 +70,7 @@ public class L3NEW_TG_B9_ImportGraph {
         return newGraph;
     }
 
-    private static void extractDataFromRowLine(String line, L3NEW_TG_B9_Graph newGraph) {
+    private static void graphParser(String line, L3NEW_TG_B9_Graph newGraph) {
         String[] edgeData = line.split(" ");
 
         L3NEW_TG_B9_Node originNode = getSpecificNodeOfGraphFromString(newGraph, edgeData[0]);

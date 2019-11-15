@@ -1,4 +1,3 @@
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +29,14 @@ public class L3NEW_TG_B9_Node {
     public void addEdge(L3NEW_TG_B9_Node destinationNode, int weight) {
         this.listEdges.put(destinationNode, weight);
         this.listSuccessor.add(destinationNode);
+    }
+
+    public boolean isNodeASuccessor(L3NEW_TG_B9_Node nodeToTest){
+        return this.listSuccessor.contains(nodeToTest);
+    }
+
+    public Integer getWeightEdge(L3NEW_TG_B9_Node destinationNode){
+        return this.listEdges.get(destinationNode);
     }
 
     //endregion
@@ -81,11 +88,11 @@ public class L3NEW_TG_B9_Node {
         StringBuilder stringBuilder = new StringBuilder();
 
         for (L3NEW_TG_B9_Node successor : this.listEdges.keySet()) {
-            stringBuilder.append(this.label);
-            stringBuilder.append(" == ");
-            stringBuilder.append(this.listEdges.get(successor));
-            stringBuilder.append(" => ");
-            stringBuilder.append(successor.label);
+            stringBuilder.append(String.format("%4s",this.label));
+            stringBuilder.append(String.format("%5s","=="));
+            stringBuilder.append(String.format("%4s",this.listEdges.get(successor)));
+            stringBuilder.append(String.format("%5s","=>"));
+            stringBuilder.append(String.format("%4s",successor.label));
             stringBuilder.append("\n");
         }
 

@@ -1,14 +1,11 @@
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 public class L3NEW_TG_B9_Graph {
 
     //region Variables
 
-    private int nodesNumber;
-    private int directedEdgesNumber;
+    private int numberOfNode;
+    private int numberOfEdges;
     private HashMap<String, L3NEW_TG_B9_Node> nodesHashMap;
 
     //endregion
@@ -16,8 +13,8 @@ public class L3NEW_TG_B9_Graph {
     //region Constructor
 
     public L3NEW_TG_B9_Graph() {
-        this.nodesNumber = 0;
-        this.directedEdgesNumber = 0;
+        this.numberOfNode = 0;
+        this.numberOfEdges = 0;
         this.nodesHashMap = new HashMap<>();
     }
 
@@ -37,18 +34,14 @@ public class L3NEW_TG_B9_Graph {
         return this.nodesHashMap.get(nodeLabel);
     }
 
-    private boolean isDestinationNodeSuccessor(Set<L3NEW_TG_B9_Node> listSuccessor, L3NEW_TG_B9_Node destinationNode) {
-        return listSuccessor.contains(destinationNode);
-    }
 
-    private void fillAdjacencyOfANode(Set<L3NEW_TG_B9_Node> listSuccessor) {
+    private void fillAdjacencyOfANode(L3NEW_TG_B9_Node originNode) {
 
         //For each destination node
-        for (String destinationNodeLabel : this.nodesHashMap.keySet()) {
-            L3NEW_TG_B9_Node destinationNode = this.getSpecificNodeFromLabel(destinationNodeLabel);
+        for (L3NEW_TG_B9_Node destinationNode : this.nodesHashMap.values()) {
 
             //Check if destinationNode is a successor of the originNode
-            if (isDestinationNodeSuccessor(listSuccessor, destinationNode)) {
+            if (originNode.isNodeASuccessor(destinationNode)) {
                 System.out.print(String.format("%5s", "V"));
             } else {
                 System.out.print(String.format("%5s", "F"));
@@ -59,11 +52,19 @@ public class L3NEW_TG_B9_Graph {
     private void fillValueOfANode(L3NEW_TG_B9_Node originNode) {
 
         //For each destination node
+        for (L3NEW_TG_B9_Node destinationNode : this.nodesHashMap.values()) {
 
+            //Check if destinationNode is a successor of the originNode
+            if (originNode.isNodeASuccessor(destinationNode)) {
+                System.out.print(String.format("%5d", originNode.getWeightEdge(destinationNode)));
+            } else {
+                System.out.print(String.format("%5d", 0));
+            }
+        }
     }
 
     private void displayColumnsHeadersMatrix() {
-        System.out.print("\n ");  //To align columns header with columns
+        System.out.print(" ");  //To align columns header with columns
 
         //Display columns header
         for (String nodeLabel : this.nodesHashMap.keySet()) {
@@ -72,6 +73,8 @@ public class L3NEW_TG_B9_Graph {
     }
 
     public void displayAdjacencyMatrix() {
+
+        System.out.print("\n - - - - - Matrice d'adjacence - - - - - \n");
 
         this.displayColumnsHeadersMatrix();
 
@@ -82,9 +85,9 @@ public class L3NEW_TG_B9_Graph {
             System.out.print("\n" + originNodeLabel);
 
             //Get list successor
-            Set<L3NEW_TG_B9_Node> listSuccessor = this.getSpecificNodeFromLabel(originNodeLabel).getListSuccessor();
+            L3NEW_TG_B9_Node originNode = this.getSpecificNodeFromLabel(originNodeLabel);
 
-            fillAdjacencyOfANode(listSuccessor);
+            fillAdjacencyOfANode(originNode);
         }
 
         System.out.println();
@@ -92,13 +95,14 @@ public class L3NEW_TG_B9_Graph {
 
     public void displayValuesMatrix() {
 
+        System.out.print("\n - - - - - Matrice de valeures - - - - - \n");
+
         this.displayColumnsHeadersMatrix();
 
         //For each origin node
         for (String originNodeLabel : this.nodesHashMap.keySet()) {
 
             //Display row header
-
             System.out.print("\n" + originNodeLabel);
 
             //Get originNode
@@ -108,19 +112,18 @@ public class L3NEW_TG_B9_Graph {
         }
 
         System.out.println();
-
     }
 
     //endregion
 
     //region Getter
 
-    public int getNodesNumber() {
-        return nodesNumber;
+    public int getNumberOfNode() {
+        return numberOfNode;
     }
 
-    public int getDirectedEdgesNumber() {
-        return directedEdgesNumber;
+    public int getNumberOfEdges() {
+        return numberOfEdges;
     }
 
     public HashMap<String, L3NEW_TG_B9_Node> getNodesHashMap() {
@@ -131,15 +134,15 @@ public class L3NEW_TG_B9_Graph {
 
     //region Setter
 
-    public void setNodesNumber(int nodesNumber) {
-        this.nodesNumber = nodesNumber;
+    public void setNumberOfNode(int numberOfNode) {
+        this.numberOfNode = numberOfNode;
     }
 
-    public void setDirectedEdgesNumber(int directedEdgesNumber) {
-        this.directedEdgesNumber = directedEdgesNumber;
+    public void setNumberOfEdges(int numberOfEdges) {
+        this.numberOfEdges = numberOfEdges;
     }
 
-    public void setNodesList(HashMap<String, L3NEW_TG_B9_Node> nodesHashMap) {
+    public void setNodesHashMap(HashMap<String, L3NEW_TG_B9_Node> nodesHashMap) {
         this.nodesHashMap = nodesHashMap;
     }
 
@@ -150,9 +153,9 @@ public class L3NEW_TG_B9_Graph {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("\n");
-        stringBuilder.append("Nombre de sommet(s) : ").append(nodesNumber).append("\n");
-        stringBuilder.append("Nombre d'arc(s) : ").append(directedEdgesNumber).append("\n");
+        stringBuilder.append("\n - - - - - Graphe - - - - - \n");
+        stringBuilder.append("Nombre de sommet(s) : ").append(numberOfNode).append("\n");
+        stringBuilder.append("Nombre d'arc(s) : ").append(numberOfEdges).append("\n");
         stringBuilder.append("Origine   Poids   Destination").append("\n");
 
         for (String key : this.nodesHashMap.keySet()) {
