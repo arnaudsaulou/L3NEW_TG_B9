@@ -16,7 +16,8 @@ public class L3NEW_TG_B9_Main {
         //Print value matrix
         graph.displayValuesMatrix();
 
-        //TODO Comming soon ...
+        //Circuit detection
+        graph.circuitDetection();
 
     }
 }

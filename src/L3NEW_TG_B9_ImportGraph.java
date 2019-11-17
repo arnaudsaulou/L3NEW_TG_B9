@@ -80,15 +80,23 @@ public class L3NEW_TG_B9_ImportGraph {
     }
 
     private static L3NEW_TG_B9_Node getSpecificNodeOfGraphFromString(L3NEW_TG_B9_Graph newGraph, String data) {
-        L3NEW_TG_B9_Node node;
+        L3NEW_TG_B9_Node node = null;
 
-        //If the node is not already in the list, add it, else get it
-        if (newGraph.isNodeNotAlreadyRegister(data)) {
-            node = new L3NEW_TG_B9_Node(data);
-            newGraph.addNodeToGraph(node);
-        } else {
-            node = newGraph.getSpecificNodeFromLabel(data);
+        try{
+            Integer nodeLabel = Integer.parseInt(data);
+
+            //If the node is not already in the list, add it, else get it
+            if (newGraph.isNodeNotAlreadyRegister(nodeLabel)) {
+                node = new L3NEW_TG_B9_Node(nodeLabel);
+                newGraph.addNodeToGraph(node);
+            } else {
+                node = newGraph.getSpecificNodeFromLabel(nodeLabel);
+            }
+
+        }catch (InputMismatchException e){
+
         }
+
         return node;
     }
 
