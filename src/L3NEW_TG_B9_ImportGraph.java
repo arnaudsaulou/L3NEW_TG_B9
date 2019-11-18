@@ -82,7 +82,7 @@ public class L3NEW_TG_B9_ImportGraph {
     private static L3NEW_TG_B9_Node getSpecificNodeOfGraphFromString(L3NEW_TG_B9_Graph newGraph, String data) {
         L3NEW_TG_B9_Node node = null;
 
-        try{
+        try {
             Integer nodeLabel = Integer.parseInt(data);
 
             //If the node is not already in the list, add it, else get it
@@ -93,7 +93,7 @@ public class L3NEW_TG_B9_ImportGraph {
                 node = newGraph.getSpecificNodeFromLabel(nodeLabel);
             }
 
-        }catch (InputMismatchException e){
+        } catch (InputMismatchException e) {
 
         }
 

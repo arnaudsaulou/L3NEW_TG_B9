@@ -1,5 +1,6 @@
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
+import java.util.Iterator;
 
 public class L3NEW_TG_B9_Graph {
 
@@ -84,7 +85,7 @@ public class L3NEW_TG_B9_Graph {
         for (Integer originNodeLabel : this.nodesHashMap.keySet()) {
 
             //Display row header
-            System.out.print("\n" + String.format("%3s",originNodeLabel));
+            System.out.print("\n" + String.format("%3s", originNodeLabel));
 
             //Get list successor
             L3NEW_TG_B9_Node originNode = this.getSpecificNodeFromLabel(originNodeLabel);
@@ -105,7 +106,7 @@ public class L3NEW_TG_B9_Graph {
         for (Integer originNodeLabel : this.nodesHashMap.keySet()) {
 
             //Display row header
-            System.out.print("\n" + String.format("%3s",originNodeLabel));
+            System.out.print("\n" + String.format("%3s", originNodeLabel));
 
             //Get originNode
             L3NEW_TG_B9_Node originNode = this.getSpecificNodeFromLabel(originNodeLabel);
@@ -116,31 +117,117 @@ public class L3NEW_TG_B9_Graph {
         System.out.println();
     }
 
-    public void circuitDetection(){
+    public void removeNodeWithoutPredecessorOrSuccessor(HashMap<Integer, L3NEW_TG_B9_Node> nodesHashMapCopy) {
 
-        //For each origin node
+        boolean aNodeHasBeenRemoved = true;
 
-        while(!this.nodesHashMap.keySet().isEmpty()){
+        while (aNodeHasBeenRemoved) {
+            aNodeHasBeenRemoved = false;
 
-            Integer originNodeLabel = this.nodesHashMap.get().;
+            Iterator iterator = nodesHashMapCopy.keySet().iterator();
 
-            System.out.println();
+            while (iterator.hasNext()) {
+                Integer key = (Integer) iterator.next();
+                L3NEW_TG_B9_Node node = nodesHashMapCopy.get(key);
 
-            //Get originNode
-            L3NEW_TG_B9_Node originNode = this.getSpecificNodeFromLabel(originNodeLabel);
-
-            if(originNode.getListPredecessor().isEmpty()){
-                for (L3NEW_TG_B9_Node sucessor : originNode.getListSuccessor()){
-                    originNode.removeEdge(sucessor);
+                if (node.isListPredecessorEmpty()) {
+                    System.out.println("Suppression point d'entré : " + node.getLabel());
+                    node.destroyLinks();
+                    iterator.remove();
+                    aNodeHasBeenRemoved = true;
+                } else if (node.isListSuccessorEmpty()) {
+                    System.out.println("Suppression point de sortie : " + node.getLabel());
+                    node.destroyLinks();
+                    iterator.remove();
+                    aNodeHasBeenRemoved = true;
                 }
-                this.nodesHashMap.remove(originNode.getLabel());
             }
+        }
+    }
+
+    private boolean isGraphContainsCircuit(HashMap<Integer, L3NEW_TG_B9_Node> nodesHashMapCopy) {
+        return !nodesHashMapCopy.isEmpty();
+    }
+
+    public void circuitDetection() {
+
+        System.out.print("\n - - - - - Détection de circuit - - - - - \n");
+
+        HashMap<Integer, L3NEW_TG_B9_Node> nodesHashMapCopy = new HashMap<>(this.nodesHashMap);
+
+        //TODO Error reference copy instead of value copy
+
+        //removeNodeWithoutPredecessorOrSuccessor(nodesHashMapCopy);
+
+        /*if(isGraphContainsCircuit(nodesHashMapCopy)){
+            System.out.println("Le circuit contient au moins un circuit");
+        }else{*/
+        this.computeRank();
+        //}
+
+    }
+
+    private void computeRank() {
+
+        System.out.print("\n - - - - - Calcul des rang - - - - - \n");
+
+        //Initialized nbPredecessor
+        HashMap<L3NEW_TG_B9_Node, Integer> nodePredecessorNumber = initializedNbPredecessor(this.nodesHashMap);
+
+        ArrayList<L3NEW_TG_B9_Node> origins = new ArrayList<>();
+
+        int rank = 0;
+        while (origins.size() != 0 || rank == 0) {
+
+            //Get ride of last pass origins
+            origins.clear();
+
+            getOriginNodes(nodePredecessorNumber, origins, rank);
+            decrementNbPredecessorOfSuccessorOfOriginsNodes(nodePredecessorNumber, origins);
+
+            rank++;
 
         }
 
-        System.out.println(this);
+        displayRank();
+    }
 
+    private HashMap<L3NEW_TG_B9_Node, Integer> initializedNbPredecessor(HashMap<Integer, L3NEW_TG_B9_Node> nodesHashMapCopy) {
+        HashMap<L3NEW_TG_B9_Node, Integer> nodePredecessorNumber = new HashMap<>();
+        for (L3NEW_TG_B9_Node node : nodesHashMapCopy.values()) {
+            nodePredecessorNumber.put(node, node.getListPredecessor().size());
+        }
+        return nodePredecessorNumber;
+    }
 
+    private void getOriginNodes(HashMap<L3NEW_TG_B9_Node, Integer> nodePredecessorNumber, ArrayList<L3NEW_TG_B9_Node> origins, int rank) {
+        for (L3NEW_TG_B9_Node node : nodePredecessorNumber.keySet()) {
+            if (nodePredecessorNumber.get(node) == 0) {
+                origins.add(node);
+                nodePredecessorNumber.put(node, nodePredecessorNumber.get(node) - 1);
+                node.setRank(rank);
+            }
+        }
+    }
+
+    private void decrementNbPredecessorOfSuccessorOfOriginsNodes(HashMap<L3NEW_TG_B9_Node, Integer> nodePredecessorNumber, ArrayList<L3NEW_TG_B9_Node> origins) {
+        for (L3NEW_TG_B9_Node origin : origins) {
+            for (L3NEW_TG_B9_Node successor : origin.getListSuccessor()) {
+                nodePredecessorNumber.put(successor, nodePredecessorNumber.get(successor) - 1);
+            }
+        }
+    }
+
+    private void displayRank() {
+        for (Integer node : this.nodesHashMap.keySet()) {
+            System.out.print(String.format("%4d", node));
+        }
+
+        System.out.println();
+
+        for (L3NEW_TG_B9_Node node : this.nodesHashMap.values()) {
+            System.out.print(String.format("%4d", node.getRank()));
+        }
     }
 
     //endregion

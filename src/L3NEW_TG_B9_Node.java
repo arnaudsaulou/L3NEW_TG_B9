@@ -10,6 +10,7 @@ public class L3NEW_TG_B9_Node {
     private Set<L3NEW_TG_B9_Node> listPredecessor;
     private Set<L3NEW_TG_B9_Node> listSuccessor;
     private HashMap<L3NEW_TG_B9_Node, Integer> listEdges;
+    private int rank;
 
     //endregion
 
@@ -20,6 +21,7 @@ public class L3NEW_TG_B9_Node {
         this.listSuccessor = new HashSet<>();
         this.listPredecessor = new HashSet<>();
         this.listEdges = new HashMap<>();
+        this.rank = 0;
     }
 
     //endregion
@@ -32,32 +34,52 @@ public class L3NEW_TG_B9_Node {
         destinationNode.addPredecessor(this);
     }
 
-    public void removeEdge(L3NEW_TG_B9_Node destinationNode){
+    public void removeEdge(L3NEW_TG_B9_Node destinationNode) {
         this.listEdges.remove(destinationNode);
     }
 
-    public void addSuccessor(L3NEW_TG_B9_Node destinationNode){
+    public void addSuccessor(L3NEW_TG_B9_Node destinationNode) {
         this.listSuccessor.add(destinationNode);
     }
 
-    public void removeSuccessor(L3NEW_TG_B9_Node destinationNode){
-        this.listPredecessor.remove(destinationNode);
+    public void removeSuccessor(L3NEW_TG_B9_Node destinationNode) {
+        this.listSuccessor.remove(destinationNode);
     }
 
-    public void addPredecessor(L3NEW_TG_B9_Node originNode){
+    public void addPredecessor(L3NEW_TG_B9_Node originNode) {
         this.listPredecessor.add(originNode);
     }
 
-    public void removePredecessor(L3NEW_TG_B9_Node originNode){
+    public void removePredecessor(L3NEW_TG_B9_Node originNode) {
         this.listPredecessor.remove(originNode);
     }
 
-    public boolean isNodeASuccessor(L3NEW_TG_B9_Node nodeToTest){
+    public boolean isNodeASuccessor(L3NEW_TG_B9_Node nodeToTest) {
         return this.listSuccessor.contains(nodeToTest);
     }
 
-    public Integer getWeightEdge(L3NEW_TG_B9_Node destinationNode){
+    public boolean isListPredecessorEmpty() {
+        return this.listPredecessor.isEmpty();
+    }
+
+    public boolean isListSuccessorEmpty() {
+        return this.listSuccessor.isEmpty();
+    }
+
+    public Integer getWeightEdge(L3NEW_TG_B9_Node destinationNode) {
         return this.listEdges.get(destinationNode);
+    }
+
+    public void destroyLinks() {
+
+        for (L3NEW_TG_B9_Node successor : this.listSuccessor) {
+            successor.removePredecessor(this);
+        }
+
+        for (L3NEW_TG_B9_Node predecessor : this.listPredecessor) {
+            predecessor.removeEdge(this);
+            predecessor.removeSuccessor(this);
+        }
     }
 
     //endregion
@@ -68,6 +90,10 @@ public class L3NEW_TG_B9_Node {
         return this.label;
     }
 
+    public void setLabel(Integer label) {
+        this.label = label;
+    }
+
     public Set<L3NEW_TG_B9_Node> getListPredecessor() {
         return this.listPredecessor;
     }
@@ -76,16 +102,16 @@ public class L3NEW_TG_B9_Node {
         return this.listSuccessor;
     }
 
-    public HashMap<L3NEW_TG_B9_Node, Integer> getListEdges() {
-        return this.listEdges;
+    public int getRank() {
+        return rank;
     }
 
     //endregion
 
     //region Setter
 
-    public void setLabel(Integer label) {
-        this.label = label;
+    public void setRank(int rank) {
+        this.rank = rank;
     }
 
     public void setListPredecessor(Set<L3NEW_TG_B9_Node> listPredecessor) {
@@ -100,6 +126,10 @@ public class L3NEW_TG_B9_Node {
         this.listEdges = listEdges;
     }
 
+    public HashMap<L3NEW_TG_B9_Node, Integer> getListEdges() {
+        return this.listEdges;
+    }
+
     //endregion
 
     //region Override
@@ -109,11 +139,11 @@ public class L3NEW_TG_B9_Node {
         StringBuilder stringBuilder = new StringBuilder();
 
         for (L3NEW_TG_B9_Node successor : this.listEdges.keySet()) {
-            stringBuilder.append(String.format("%1$4s",this.label));
-            stringBuilder.append(String.format("%1$5s","=="));
-            stringBuilder.append(String.format("%1$4s",this.listEdges.get(successor)));
-            stringBuilder.append(String.format("%1$5s","=>"));
-            stringBuilder.append(String.format("%1$4s",successor.label));
+            stringBuilder.append(String.format("%1$4s", this.label));
+            stringBuilder.append(String.format("%1$5s", "=="));
+            stringBuilder.append(String.format("%1$4s", this.listEdges.get(successor)));
+            stringBuilder.append(String.format("%1$5s", "=>"));
+            stringBuilder.append(String.format("%1$4s", successor.label));
             stringBuilder.append("\n");
         }
 
