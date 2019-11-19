@@ -13,13 +13,6 @@ public class L3NEW_TG_B9_ImportGraph {
     private static final String GRAPH_EXTENSION = ".txt";
     //endregion
 
-    //region Constructor
-
-    public L3NEW_TG_B9_ImportGraph() {
-    }
-
-    //endregion
-
     //region Utils
 
     public static L3NEW_TG_B9_Graph importGraphProcedure() {
@@ -94,7 +87,7 @@ public class L3NEW_TG_B9_ImportGraph {
             }
 
         } catch (InputMismatchException e) {
-
+            e.printStackTrace();
         }
 
         return node;

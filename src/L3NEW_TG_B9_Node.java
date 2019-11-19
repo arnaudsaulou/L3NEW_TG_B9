@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class L3NEW_TG_B9_Node {
@@ -34,7 +35,7 @@ public class L3NEW_TG_B9_Node {
         destinationNode.addPredecessor(this);
     }
 
-    public void removeEdge(L3NEW_TG_B9_Node destinationNode) {
+    private void removeEdge(L3NEW_TG_B9_Node destinationNode) {
         this.listEdges.remove(destinationNode);
     }
 
@@ -42,7 +43,7 @@ public class L3NEW_TG_B9_Node {
         this.listSuccessor.add(destinationNode);
     }
 
-    public void removeSuccessor(L3NEW_TG_B9_Node destinationNode) {
+    private void removeSuccessor(L3NEW_TG_B9_Node destinationNode) {
         this.listSuccessor.remove(destinationNode);
     }
 
@@ -50,7 +51,7 @@ public class L3NEW_TG_B9_Node {
         this.listPredecessor.add(originNode);
     }
 
-    public void removePredecessor(L3NEW_TG_B9_Node originNode) {
+    private void removePredecessor(L3NEW_TG_B9_Node originNode) {
         this.listPredecessor.remove(originNode);
     }
 
@@ -80,6 +81,10 @@ public class L3NEW_TG_B9_Node {
             predecessor.removeEdge(this);
             predecessor.removeSuccessor(this);
         }
+
+        this.listSuccessor.clear();
+        this.listPredecessor.clear();
+        this.listEdges.clear();
     }
 
     //endregion
@@ -155,11 +160,14 @@ public class L3NEW_TG_B9_Node {
         if (this == o) return true;
         if (!(o instanceof L3NEW_TG_B9_Node)) return false;
         L3NEW_TG_B9_Node that = (L3NEW_TG_B9_Node) o;
-        return getLabel().equals(that.getLabel()) &&
-                getListPredecessor().equals(that.getListPredecessor()) &&
-                getListSuccessor().equals(that.getListSuccessor()) &&
-                getListEdges().equals(that.getListEdges());
+        return getLabel().equals(that.getLabel());
     }
 
-    //endregion
+    @Override
+    public int hashCode() {
+        return Objects.hash(getLabel());
+    }
+
+
+//endregion
 }
