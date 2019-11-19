@@ -12,6 +12,8 @@ public class L3NEW_TG_B9_Node {
     private Set<L3NEW_TG_B9_Node> listSuccessor;
     private HashMap<L3NEW_TG_B9_Node, Integer> listEdges;
     private int rank;
+    private int earliestDate;
+    private int latestDate;
 
     //endregion
 
@@ -23,6 +25,8 @@ public class L3NEW_TG_B9_Node {
         this.listPredecessor = new HashSet<>();
         this.listEdges = new HashMap<>();
         this.rank = 0;
+        this.earliestDate = 0;
+        this.latestDate = 0;
     }
 
     //endregion
@@ -87,16 +91,31 @@ public class L3NEW_TG_B9_Node {
         this.listEdges.clear();
     }
 
+    public String displayEdges() {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (L3NEW_TG_B9_Node successor : this.listEdges.keySet()) {
+            stringBuilder.append(String.format("%1$4s", this.label));
+            stringBuilder.append(String.format("%1$5s", "=="));
+            stringBuilder.append(String.format("%1$4s", this.listEdges.get(successor)));
+            stringBuilder.append(String.format("%1$5s", "=>"));
+            stringBuilder.append(String.format("%1$4s", successor.label));
+            stringBuilder.append("\n");
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public void displayCalendar() {
+        System.out.println("Node : " + this.getLabel() + " [ " + this.getEarliestDate() + " ; " + this.getLatestDate() + " ]");
+    }
+
     //endregion
 
     //region Getter
 
     public Integer getLabel() {
         return this.label;
-    }
-
-    public void setLabel(Integer label) {
-        this.label = label;
     }
 
     public Set<L3NEW_TG_B9_Node> getListPredecessor() {
@@ -111,9 +130,21 @@ public class L3NEW_TG_B9_Node {
         return rank;
     }
 
+    public int getEarliestDate() {
+        return earliestDate;
+    }
+
+    public void setEarliestDate(int earliestDate) {
+        this.earliestDate = earliestDate;
+    }
+
     //endregion
 
     //region Setter
+
+    public int getLatestDate() {
+        return latestDate;
+    }
 
     public void setRank(int rank) {
         this.rank = rank;
@@ -131,6 +162,14 @@ public class L3NEW_TG_B9_Node {
         this.listEdges = listEdges;
     }
 
+    public void setLatestDate(int latestDate) {
+        this.latestDate = latestDate;
+    }
+
+    public void setLabel(Integer label) {
+        this.label = label;
+    }
+
     public HashMap<L3NEW_TG_B9_Node, Integer> getListEdges() {
         return this.listEdges;
     }
@@ -141,18 +180,7 @@ public class L3NEW_TG_B9_Node {
 
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for (L3NEW_TG_B9_Node successor : this.listEdges.keySet()) {
-            stringBuilder.append(String.format("%1$4s", this.label));
-            stringBuilder.append(String.format("%1$5s", "=="));
-            stringBuilder.append(String.format("%1$4s", this.listEdges.get(successor)));
-            stringBuilder.append(String.format("%1$5s", "=>"));
-            stringBuilder.append(String.format("%1$4s", successor.label));
-            stringBuilder.append("\n");
-        }
-
-        return stringBuilder.toString();
+        return String.valueOf(this.getLabel());
     }
 
     @Override

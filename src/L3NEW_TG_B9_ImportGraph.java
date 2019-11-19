@@ -76,14 +76,13 @@ public class L3NEW_TG_B9_ImportGraph {
         L3NEW_TG_B9_Node node = null;
 
         try {
-            Integer nodeLabel = Integer.parseInt(data);
+            node = new L3NEW_TG_B9_Node(Integer.parseInt(data));
 
             //If the node is not already in the list, add it, else get it
-            if (newGraph.isNodeNotAlreadyRegister(nodeLabel)) {
-                node = new L3NEW_TG_B9_Node(nodeLabel);
+            if (newGraph.isNodeNotAlreadyRegister(node)) {
                 newGraph.addNodeToGraph(node);
             } else {
-                node = newGraph.getSpecificNodeFromLabel(nodeLabel);
+                node = newGraph.getSpecificNode(node);
             }
 
         } catch (InputMismatchException e) {

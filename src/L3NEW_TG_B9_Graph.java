@@ -8,7 +8,8 @@ public class L3NEW_TG_B9_Graph {
 
     private int numberOfNode;
     private int numberOfEdges;
-    private HashMap<Integer, L3NEW_TG_B9_Node> nodesHashMap;
+    private ArrayList<L3NEW_TG_B9_Node> nodesList;
+    private ArrayList<L3NEW_TG_B9_Node> originNodesListOnRank0;
 
     //endregion
 
@@ -17,29 +18,30 @@ public class L3NEW_TG_B9_Graph {
     public L3NEW_TG_B9_Graph() {
         this.numberOfNode = 0;
         this.numberOfEdges = 0;
-        this.nodesHashMap = new HashMap<>();
+        this.nodesList = new ArrayList<>();
+        this.originNodesListOnRank0 = new ArrayList<>();
     }
 
     //endregion
 
     //region Utils
 
-    public boolean isNodeNotAlreadyRegister(Integer researchNodeLabel) {
-        return !this.nodesHashMap.containsKey(researchNodeLabel);
+    public boolean isNodeNotAlreadyRegister(L3NEW_TG_B9_Node searchedNode) {
+        return !this.nodesList.contains(searchedNode);
     }
 
     public void addNodeToGraph(L3NEW_TG_B9_Node newNode) {
-        this.nodesHashMap.put(newNode.getLabel(), newNode);
+        this.nodesList.add(newNode);
     }
 
-    public L3NEW_TG_B9_Node getSpecificNodeFromLabel(Integer nodeLabel) {
-        return this.nodesHashMap.get(nodeLabel);
+    public L3NEW_TG_B9_Node getSpecificNode(L3NEW_TG_B9_Node searchedNod) {
+        return this.nodesList.get(this.nodesList.indexOf(searchedNod));
     }
 
     private void fillAdjacencyOfANode(L3NEW_TG_B9_Node originNode) {
 
         //For each destination node
-        for (L3NEW_TG_B9_Node destinationNode : this.nodesHashMap.values()) {
+        for (L3NEW_TG_B9_Node destinationNode : this.nodesList) {
 
             //Check if destinationNode is a successor of the originNode
             if (originNode.isNodeASuccessor(destinationNode)) {
@@ -53,7 +55,7 @@ public class L3NEW_TG_B9_Graph {
     private void fillValueOfANode(L3NEW_TG_B9_Node originNode) {
 
         //For each destination node
-        for (L3NEW_TG_B9_Node destinationNode : this.nodesHashMap.values()) {
+        for (L3NEW_TG_B9_Node destinationNode : this.nodesList) {
 
             //Check if destinationNode is a successor of the originNode
             if (originNode.isNodeASuccessor(destinationNode)) {
@@ -69,8 +71,8 @@ public class L3NEW_TG_B9_Graph {
         System.out.print(String.format("%3s", ""));  //To align columns header with columns
 
         //Display columns header
-        for (Integer nodeLabel : this.nodesHashMap.keySet()) {
-            System.out.print(String.format("%5s", nodeLabel));
+        for (L3NEW_TG_B9_Node node : this.nodesList) {
+            System.out.print(String.format("%5s", node.getLabel()));
         }
 
     }
@@ -82,15 +84,12 @@ public class L3NEW_TG_B9_Graph {
         this.displayColumnsHeadersMatrix();
 
         //For each origin node
-        for (Integer originNodeLabel : this.nodesHashMap.keySet()) {
+        for (L3NEW_TG_B9_Node node : this.nodesList) {
 
             //Display row header
-            System.out.print("\n" + String.format("%3s", originNodeLabel));
+            System.out.print("\n" + String.format("%3s", node.getLabel()));
 
-            //Get list successor
-            L3NEW_TG_B9_Node originNode = this.getSpecificNodeFromLabel(originNodeLabel);
-
-            fillAdjacencyOfANode(originNode);
+            fillAdjacencyOfANode(node);
         }
 
         System.out.println();
@@ -103,21 +102,18 @@ public class L3NEW_TG_B9_Graph {
         this.displayColumnsHeadersMatrix();
 
         //For each origin node
-        for (Integer originNodeLabel : this.nodesHashMap.keySet()) {
+        for (L3NEW_TG_B9_Node node : this.nodesList) {
 
             //Display row header
-            System.out.print("\n" + String.format("%3s", originNodeLabel));
+            System.out.print("\n" + String.format("%3s", node.getLabel()));
 
-            //Get originNode
-            L3NEW_TG_B9_Node originNode = this.getSpecificNodeFromLabel(originNodeLabel);
-
-            fillValueOfANode(originNode);
+            fillValueOfANode(node);
         }
 
         System.out.println();
     }
 
-    private void removeNodeWithoutPredecessorOrSuccessor(HashMap<Integer, L3NEW_TG_B9_Node> nodesHashMapCopy) {
+    private void removeNodeWithoutPredecessorOrSuccessor(ArrayList<L3NEW_TG_B9_Node> nodesListCopy) {
 
         boolean aNodeHasBeenRemoved = true;
 
@@ -125,11 +121,10 @@ public class L3NEW_TG_B9_Graph {
 
         while (aNodeHasBeenRemoved) {
             aNodeHasBeenRemoved = false;
-            iterator = nodesHashMapCopy.keySet().iterator();
+            iterator = nodesListCopy.iterator();
 
             while (iterator.hasNext()) {
-                Integer key = (Integer) iterator.next();
-                L3NEW_TG_B9_Node node = nodesHashMapCopy.get(key);
+                L3NEW_TG_B9_Node node = (L3NEW_TG_B9_Node) iterator.next();
 
                 if (node.isListPredecessorEmpty()) {
                     System.out.println("Suppression point d'entré : " + node.getLabel());
@@ -146,49 +141,44 @@ public class L3NEW_TG_B9_Graph {
         }
     }
 
-    private boolean isGraphContainsCircuit(HashMap<Integer, L3NEW_TG_B9_Node> nodesHashMapCopy) {
-        return !nodesHashMapCopy.isEmpty();
+    private boolean isGraphContainsCircuit(ArrayList<L3NEW_TG_B9_Node> nodesList) {
+        return !nodesList.isEmpty();
     }
 
-    public void circuitDetection() {
+    public boolean circuitDetection() {
 
         System.out.print("\n - - - - - Détection de circuit - - - - - \n");
 
-        HashMap<Integer, L3NEW_TG_B9_Node> hashMapCopy = deepCopyHashMap(this.nodesHashMap);
+        ArrayList<L3NEW_TG_B9_Node> arrayListCopy = deepCopyArrayList(this.nodesList);
 
-        removeNodeWithoutPredecessorOrSuccessor(hashMapCopy);
+        removeNodeWithoutPredecessorOrSuccessor(arrayListCopy);
 
-        if (isGraphContainsCircuit(hashMapCopy)) {
-            System.out.println("Le circuit contient au moins un circuit \n");
-        } else {
-            this.computeRank();
-        }
-
+        return isGraphContainsCircuit(arrayListCopy);
     }
 
-    private HashMap<Integer, L3NEW_TG_B9_Node> deepCopyHashMap(HashMap<Integer, L3NEW_TG_B9_Node> nodesHashMap) {
-        HashMap<Integer, L3NEW_TG_B9_Node> nodesHashMapCopy = new HashMap<>();
+    private ArrayList<L3NEW_TG_B9_Node> deepCopyArrayList(ArrayList<L3NEW_TG_B9_Node> nodesList) {
+        ArrayList<L3NEW_TG_B9_Node> nodesListCopy = new ArrayList<>();
 
-        for (L3NEW_TG_B9_Node node : nodesHashMap.values()) {
-            nodesHashMapCopy.put(node.getLabel(), new L3NEW_TG_B9_Node(node.getLabel()));
+        for (L3NEW_TG_B9_Node node : nodesList) {
+            nodesListCopy.add(new L3NEW_TG_B9_Node(node.getLabel()));
         }
 
-        for (L3NEW_TG_B9_Node node : nodesHashMap.values()) {
+        for (L3NEW_TG_B9_Node node : nodesList) {
             for (L3NEW_TG_B9_Node successor : node.getListSuccessor()) {
-                nodesHashMapCopy.get(node.getLabel()).addSuccessor(nodesHashMapCopy.get(successor.getLabel()));
-                nodesHashMapCopy.get(successor.getLabel()).addPredecessor(nodesHashMapCopy.get(node.getLabel()));
+                nodesListCopy.get(node.getLabel()).addSuccessor(nodesListCopy.get(successor.getLabel()));
+                nodesListCopy.get(successor.getLabel()).addPredecessor(nodesListCopy.get(node.getLabel()));
             }
         }
 
-        return nodesHashMapCopy;
+        return nodesListCopy;
     }
 
-    private void computeRank() {
+    public void computeRanks() {
 
         System.out.print("\n - - - - - Calcul des rang - - - - - \n");
 
         //Initialized nbPredecessor
-        HashMap<L3NEW_TG_B9_Node, Integer> nodePredecessorNumber = initializedNbPredecessor(this.nodesHashMap);
+        HashMap<L3NEW_TG_B9_Node, Integer> nodePredecessorNumber = initializedNbPredecessor(this.nodesList);
 
         ArrayList<L3NEW_TG_B9_Node> origins = new ArrayList<>();
 
@@ -197,12 +187,24 @@ public class L3NEW_TG_B9_Graph {
 
             //Get ride of last pass origins
             origins.clear();
-            origins = getOriginNodes(nodePredecessorNumber, rank);
+
+            origins = getOriginNodesDependingOnRank(nodePredecessorNumber, rank);
             displayRankTrace(origins, rank);
             decrementNbPredecessorOfSuccessorOfOriginsNodes(nodePredecessorNumber, origins);
             rank++;
         }
         displayRank();
+    }
+
+    private ArrayList<L3NEW_TG_B9_Node> getOriginNodesDependingOnRank(HashMap<L3NEW_TG_B9_Node, Integer> nodePredecessorNumber, int rank) {
+        ArrayList<L3NEW_TG_B9_Node> origins;
+        if (rank == 0) {
+            this.originNodesListOnRank0 = getOriginNodes(nodePredecessorNumber, rank);
+            origins = new ArrayList<>(this.originNodesListOnRank0);
+        } else {
+            origins = getOriginNodes(nodePredecessorNumber, rank);
+        }
+        return origins;
     }
 
     private void displayRankTrace(ArrayList<L3NEW_TG_B9_Node> origins, int rank) {
@@ -217,9 +219,9 @@ public class L3NEW_TG_B9_Graph {
         }
     }
 
-    private HashMap<L3NEW_TG_B9_Node, Integer> initializedNbPredecessor(HashMap<Integer, L3NEW_TG_B9_Node> nodesHashMapCopy) {
+    private HashMap<L3NEW_TG_B9_Node, Integer> initializedNbPredecessor(ArrayList<L3NEW_TG_B9_Node> nodesListCopy) {
         HashMap<L3NEW_TG_B9_Node, Integer> nodePredecessorNumber = new HashMap<>();
-        for (L3NEW_TG_B9_Node node : nodesHashMapCopy.values()) {
+        for (L3NEW_TG_B9_Node node : nodesListCopy) {
             nodePredecessorNumber.put(node, node.getListPredecessor().size());
         }
         return nodePredecessorNumber;
@@ -237,10 +239,12 @@ public class L3NEW_TG_B9_Graph {
         return origins;
     }
 
-    private void decrementNbPredecessorOfSuccessorOfOriginsNodes(HashMap<L3NEW_TG_B9_Node, Integer> nodePredecessorNumber, ArrayList<L3NEW_TG_B9_Node> origins) {
+    private void decrementNbPredecessorOfSuccessorOfOriginsNodes(HashMap<L3NEW_TG_B9_Node, Integer> hashMapNodeNbPredecessor, ArrayList<L3NEW_TG_B9_Node> origins) {
         for (L3NEW_TG_B9_Node origin : origins) {
             for (L3NEW_TG_B9_Node successor : origin.getListSuccessor()) {
-                nodePredecessorNumber.put(successor, nodePredecessorNumber.get(successor) - 1);
+
+                //Update hashMap : decrement NbPredecessor of a node
+                hashMapNodeNbPredecessor.put(successor, hashMapNodeNbPredecessor.get(successor) - 1);
             }
         }
     }
@@ -249,17 +253,147 @@ public class L3NEW_TG_B9_Graph {
 
         System.out.println("Rang calculés : ");
 
-        for (Integer node : this.nodesHashMap.keySet()) {
-            System.out.print(String.format("%4d", node));
+        for (L3NEW_TG_B9_Node node : this.nodesList) {
+            System.out.print(String.format("%4s", node));
         }
 
         System.out.println();
 
-        for (L3NEW_TG_B9_Node node : this.nodesHashMap.values()) {
+        for (L3NEW_TG_B9_Node node : this.nodesList) {
             System.out.print(String.format("%4d", node.getRank()));
         }
 
         System.out.println("\n");
+    }
+
+    public boolean isSchedulingGraph() {
+        int nbEntryPoint = 0, nbExitPoint = 0;
+        boolean isAllEdgesPositive = true, isNbEntryPointValid = true, isNbExitPointValid = true, isValueAllEdgesEquals = true;
+        boolean isValueEdgesOriginsNull = isValueEdgesOriginsNull();
+
+        if (isValueEdgesOriginsNull) {
+
+            //Run trough each node, stop as soon as a negative edge has been found or max entry node or max exiting node
+            Iterator iteratorNode = this.nodesList.iterator();
+            while (iteratorNode.hasNext() && isAllEdgesPositive && isNbEntryPointValid && isNbExitPointValid && isValueAllEdgesEquals) {
+                L3NEW_TG_B9_Node node = (L3NEW_TG_B9_Node) iteratorNode.next();
+
+                isAllEdgesPositive = isAllEdgesPositive(node);
+                isNbEntryPointValid = isNbEntryPointValid(nbEntryPoint, node);
+                isNbExitPointValid = isNbExitPointValid(nbExitPoint, node);
+                isValueAllEdgesEquals = isValueAllEdgesEquals(node);
+
+            }
+        }
+        return isValueEdgesOriginsNull && isAllEdgesPositive && isNbEntryPointValid && isNbExitPointValid && isValueAllEdgesEquals;
+    }
+
+    private boolean isNbEntryPointValid(int nbEntryPoint, L3NEW_TG_B9_Node node) {
+        if (node.getListPredecessor().size() == 0) {
+            nbEntryPoint++;
+        }
+        return nbEntryPoint < 2;
+    }
+
+    private boolean isNbExitPointValid(int nbExitPoint, L3NEW_TG_B9_Node node) {
+        if (node.getListSuccessor().size() == 0) {
+            nbExitPoint++;
+        }
+        return nbExitPoint < 2;
+    }
+
+    private boolean isAllEdgesPositive(L3NEW_TG_B9_Node node) {
+        boolean isSchedulingGraph = true;
+        Iterator iteratorEdgeValue = node.getListEdges().values().iterator();
+        while (iteratorEdgeValue.hasNext() && isSchedulingGraph) {
+            Integer keyEdgeValue = (Integer) iteratorEdgeValue.next();
+            if (keyEdgeValue < 0) {
+                isSchedulingGraph = false;
+            }
+        }
+        return isSchedulingGraph;
+    }
+
+    private boolean isValueEdgesOriginsNull() {
+        boolean isValueEdgesOriginsNull = true;
+
+        //Run through all origins while isValueEdgesOriginsNull
+        Iterator iteratorOrigin = this.originNodesListOnRank0.iterator();
+        while (iteratorOrigin.hasNext() && isValueEdgesOriginsNull) {
+            L3NEW_TG_B9_Node origin = (L3NEW_TG_B9_Node) iteratorOrigin.next();
+
+            //Run through all edges value of origin while isValueEdgesOriginsNull
+            Iterator iteratorEdgeValue = origin.getListEdges().values().iterator();
+            while (iteratorEdgeValue.hasNext() && isValueEdgesOriginsNull) {
+                Integer edgeValue = (Integer) iteratorEdgeValue.next();
+                if (edgeValue != 0) {
+                    isValueEdgesOriginsNull = false;
+                }
+            }
+        }
+        return isValueEdgesOriginsNull;
+    }
+
+    private boolean isValueAllEdgesEquals(L3NEW_TG_B9_Node node) {
+        boolean isValueAllEdgesEquals = true;
+        int saveValue = -1;
+
+        //Run through all edges value of origin while isValueEdgesOriginsNull
+        Iterator iteratorEdgeValue = node.getListEdges().values().iterator();
+        while (iteratorEdgeValue.hasNext() && isValueAllEdgesEquals) {
+            Integer edgeValue = (Integer) iteratorEdgeValue.next();
+
+            if (saveValue == -1) {
+                saveValue = edgeValue;
+            } else if (edgeValue != saveValue) {
+                isValueAllEdgesEquals = false;
+            }
+        }
+
+        return isValueAllEdgesEquals;
+    }
+
+    public void computeCalendar() {
+
+        computeEarliestDate(this.originNodesListOnRank0.get(0));
+        computeLatestDate(this.originNodesListOnRank0.get(0));
+
+        for (L3NEW_TG_B9_Node node : this.nodesList) {
+            node.displayCalendar();
+        }
+
+    }
+
+    private void computeEarliestDate(L3NEW_TG_B9_Node node) {
+
+        for (L3NEW_TG_B9_Node successor : node.getListSuccessor()) {
+            int edgeValue = node.getWeightEdge(successor);
+            successor.setEarliestDate(Math.max(node.getEarliestDate() + edgeValue, successor.getEarliestDate()));
+
+            if (!node.isListSuccessorEmpty()) {
+                computeEarliestDate(successor);
+            }
+        }
+
+    }
+
+    private void computeLatestDate(L3NEW_TG_B9_Node node) {
+
+        if (node.isListSuccessorEmpty()) {
+            node.setLatestDate(node.getEarliestDate());
+        } else {
+            int heaviestEdge = -1;
+            for (L3NEW_TG_B9_Node successor : node.getListSuccessor()) {
+                int edgeValue = node.getListEdges().get(successor);
+
+                computeLatestDate(successor);
+
+                if (successor.getLatestDate() - edgeValue < heaviestEdge || heaviestEdge == -1) {
+                    heaviestEdge = successor.getLatestDate() - edgeValue;
+                }
+            }
+            node.setLatestDate(heaviestEdge);
+        }
     }
 
     //endregion
@@ -274,8 +408,8 @@ public class L3NEW_TG_B9_Graph {
         return numberOfEdges;
     }
 
-    public HashMap<Integer, L3NEW_TG_B9_Node> getNodesHashMap() {
-        return nodesHashMap;
+    public ArrayList<L3NEW_TG_B9_Node> getNodesList() {
+        return nodesList;
     }
 
     //endregion
@@ -290,8 +424,8 @@ public class L3NEW_TG_B9_Graph {
         this.numberOfEdges = numberOfEdges;
     }
 
-    public void setNodesHashMap(HashMap<Integer, L3NEW_TG_B9_Node> nodesHashMap) {
-        this.nodesHashMap = nodesHashMap;
+    public void setNodesList(ArrayList<L3NEW_TG_B9_Node> nodesList) {
+        this.nodesList = nodesList;
     }
 
     //endregion
@@ -306,8 +440,8 @@ public class L3NEW_TG_B9_Graph {
         stringBuilder.append("Nombre d'arc(s) : ").append(numberOfEdges).append("\n");
         stringBuilder.append("Origine   Poids   Destination").append("\n");
 
-        for (Integer key : this.nodesHashMap.keySet()) {
-            stringBuilder.append(this.nodesHashMap.get(key));
+        for (L3NEW_TG_B9_Node node : this.nodesList) {
+            stringBuilder.append(node.displayEdges());
         }
 
         return stringBuilder.toString();

@@ -34,7 +34,25 @@ public class L3NEW_TG_B9_Main {
         graph.displayValuesMatrix();
 
         //Circuit detection
-        graph.circuitDetection();
+        if (!graph.circuitDetection()) {
+
+            //Compute ranks
+            graph.computeRanks();
+
+            //Check if it's a scheduling graph
+            if (graph.isSchedulingGraph()) {
+
+                System.out.println("Scheduling Graph");
+
+                //Compute calendar
+                graph.computeCalendar();
+
+            }
+
+        } else {
+            System.out.println("Le circuit contient au moins un circuit \n");
+        }
+
     }
 
     private static boolean askUserIfWantsToContinue() {
@@ -42,6 +60,4 @@ public class L3NEW_TG_B9_Main {
         String answer = keyboard.nextLine();
         return answer.equals("O");
     }
-
-
 }
