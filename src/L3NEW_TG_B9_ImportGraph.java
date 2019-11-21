@@ -6,7 +6,7 @@ import java.nio.file.Paths;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class L3NEW_TG_B9_ImportGraph {
+class L3NEW_TG_B9_ImportGraph {
 
     //region CONSTANTS
     private static final String GRAPH_PATH = "res/L3NEW-TG-B9-g";
@@ -44,19 +44,11 @@ public class L3NEW_TG_B9_ImportGraph {
 
         BufferedReader bufferedReader = Files.newBufferedReader(Paths.get(GRAPH_PATH + graphNumber + GRAPH_EXTENSION));
         int lineNumber = 0;
-        String line = null;
-        L3NEW_TG_B9_Graph newGraph = new L3NEW_TG_B9_Graph();
+        String line;
+        L3NEW_TG_B9_Graph newGraph = new L3NEW_TG_B9_Graph(graphNumber);
 
         while ((line = bufferedReader.readLine()) != null) {
-
-            if (lineNumber >= 2) {
-                graphParser(line, newGraph);
-            } else if (lineNumber >= 1) {
-                newGraph.setNumberOfEdges(Integer.parseInt(line));
-            } else {
-                newGraph.setNumberOfNode(Integer.parseInt(line));
-            }
-
+            graphParser(line, newGraph);
             lineNumber++;
         }
 

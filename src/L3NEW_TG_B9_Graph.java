@@ -6,18 +6,16 @@ public class L3NEW_TG_B9_Graph {
 
     //region Variables
 
-    private int numberOfNode;
-    private int numberOfEdges;
-    private ArrayList<L3NEW_TG_B9_Node> nodesList;
+    private final L3NEW_TG_B9_Logger logger;
+    private final ArrayList<L3NEW_TG_B9_Node> nodesList;
     private ArrayList<L3NEW_TG_B9_Node> originNodesListOnRank0;
 
     //endregion
 
     //region Constructor
 
-    public L3NEW_TG_B9_Graph() {
-        this.numberOfNode = 0;
-        this.numberOfEdges = 0;
+    public L3NEW_TG_B9_Graph(int graphNumber) {
+        this.logger = new L3NEW_TG_B9_Logger(graphNumber);
         this.nodesList = new ArrayList<>();
         this.originNodesListOnRank0 = new ArrayList<>();
     }
@@ -38,30 +36,37 @@ public class L3NEW_TG_B9_Graph {
         return this.nodesList.get(this.nodesList.indexOf(searchedNod));
     }
 
-    private void fillAdjacencyOfANode(L3NEW_TG_B9_Node originNode) {
+    public void print() {
+        System.out.print(this);
+        this.logger.log(this.toString());
+    }
 
+    private void fillAdjacencyOfANode(L3NEW_TG_B9_Node originNode) {
         //For each destination node
         for (L3NEW_TG_B9_Node destinationNode : this.nodesList) {
 
             //Check if destinationNode is a successor of the originNode
             if (originNode.isNodeASuccessor(destinationNode)) {
                 System.out.print(String.format("%5s", "V"));
+                this.logger.log(String.format("%5s", "V"));
             } else {
                 System.out.print(String.format("%5s", "F"));
+                this.logger.log(String.format("%5s", "F"));
             }
         }
     }
 
     private void fillValueOfANode(L3NEW_TG_B9_Node originNode) {
-
         //For each destination node
         for (L3NEW_TG_B9_Node destinationNode : this.nodesList) {
 
             //Check if destinationNode is a successor of the originNode
             if (originNode.isNodeASuccessor(destinationNode)) {
                 System.out.print(String.format("%5d", originNode.getWeightEdge(destinationNode)));
+                this.logger.log(String.format("%5d", originNode.getWeightEdge(destinationNode)));
             } else {
                 System.out.print(String.format("%5d", 0));
+                this.logger.log(String.format("%5d", 0));
             }
         }
     }
@@ -69,10 +74,12 @@ public class L3NEW_TG_B9_Graph {
     private void displayColumnsHeadersMatrix() {
 
         System.out.print(String.format("%3s", ""));  //To align columns header with columns
+        this.logger.log(String.format("%3s", ""));  //To align columns header with columns
 
         //Display columns header
         for (L3NEW_TG_B9_Node node : this.nodesList) {
             System.out.print(String.format("%5s", node.getLabel()));
+            this.logger.log(String.format("%5s", node.getLabel()));
         }
 
     }
@@ -80,6 +87,7 @@ public class L3NEW_TG_B9_Graph {
     public void displayAdjacencyMatrix() {
 
         System.out.print("\n - - - - - Matrice d'adjacence - - - - - \n");
+        this.logger.log("\n - - - - - Matrice d'adjacence - - - - - \n");
 
         this.displayColumnsHeadersMatrix();
 
@@ -88,16 +96,19 @@ public class L3NEW_TG_B9_Graph {
 
             //Display row header
             System.out.print("\n" + String.format("%3s", node.getLabel()));
+            this.logger.log("\n" + String.format("%3s", node.getLabel()));
 
             fillAdjacencyOfANode(node);
         }
 
         System.out.println();
+        this.logger.log("\n");
     }
 
     public void displayValuesMatrix() {
 
         System.out.print("\n - - - - - Matrice de valeures - - - - - \n");
+        this.logger.log("\n - - - - - Matrice de valeures - - - - - \n");
 
         this.displayColumnsHeadersMatrix();
 
@@ -106,11 +117,13 @@ public class L3NEW_TG_B9_Graph {
 
             //Display row header
             System.out.print("\n" + String.format("%3s", node.getLabel()));
+            this.logger.log("\n" + String.format("%3s", node.getLabel()));
 
             fillValueOfANode(node);
         }
 
         System.out.println();
+        this.logger.log("\n");
     }
 
     private void removeNodeWithoutPredecessorOrSuccessor(ArrayList<L3NEW_TG_B9_Node> nodesListCopy) {
@@ -128,11 +141,13 @@ public class L3NEW_TG_B9_Graph {
 
                 if (node.isListPredecessorEmpty()) {
                     System.out.println("Suppression point d'entré : " + node.getLabel());
+                    this.logger.log("Suppression point d'entré : " + node.getLabel() + "\n");
                     node.destroyLinks();
                     iterator.remove();
                     aNodeHasBeenRemoved = true;
                 } else if (node.isListSuccessorEmpty()) {
                     System.out.println("Suppression point de sortie : " + node.getLabel());
+                    this.logger.log("Suppression point de sortie : " + node.getLabel() + "\n");
                     node.destroyLinks();
                     iterator.remove();
                     aNodeHasBeenRemoved = true;
@@ -148,6 +163,7 @@ public class L3NEW_TG_B9_Graph {
     public boolean circuitDetection() {
 
         System.out.print("\n - - - - - Détection de circuit - - - - - \n");
+        this.logger.log("\n - - - - - Détection de circuit - - - - - \n");
 
         ArrayList<L3NEW_TG_B9_Node> arrayListCopy = deepCopyArrayList(this.nodesList);
 
@@ -165,8 +181,8 @@ public class L3NEW_TG_B9_Graph {
 
         for (L3NEW_TG_B9_Node node : nodesList) {
             for (L3NEW_TG_B9_Node successor : node.getListSuccessor()) {
-                nodesListCopy.get(node.getLabel()).addSuccessor(nodesListCopy.get(successor.getLabel()));
-                nodesListCopy.get(successor.getLabel()).addPredecessor(nodesListCopy.get(node.getLabel()));
+                nodesListCopy.get(nodesListCopy.indexOf(node)).addSuccessor(nodesListCopy.get(nodesListCopy.indexOf(successor)));
+                nodesListCopy.get(nodesListCopy.indexOf(successor)).addPredecessor(nodesListCopy.get(nodesListCopy.indexOf(node)));
             }
         }
 
@@ -176,6 +192,7 @@ public class L3NEW_TG_B9_Graph {
     public void computeRanks() {
 
         System.out.print("\n - - - - - Calcul des rang - - - - - \n");
+        this.logger.log("\n - - - - - Calcul des rang - - - - - \n");
 
         //Initialized nbPredecessor
         HashMap<L3NEW_TG_B9_Node, Integer> nodePredecessorNumber = initializedNbPredecessor(this.nodesList);
@@ -210,12 +227,16 @@ public class L3NEW_TG_B9_Graph {
     private void displayRankTrace(ArrayList<L3NEW_TG_B9_Node> origins, int rank) {
         if (origins.size() != 0) {
             System.out.print("Rang courant = " + rank + "\nPoint d'entrée : ");
+            this.logger.log("Rang courant = " + rank + "\nPoint d'entrée : ");
             for (L3NEW_TG_B9_Node origin : origins) {
                 System.out.print(origin.getLabel() + " ");
+                this.logger.log(origin.getLabel() + " ");
             }
             System.out.println("\n");
+            this.logger.log("\n");
         } else {
             System.out.println("Graphe vide\n");
+            this.logger.log("Graphe vide\n\n");
         }
     }
 
@@ -252,18 +273,23 @@ public class L3NEW_TG_B9_Graph {
     private void displayRank() {
 
         System.out.println("Rang calculés : ");
+        this.logger.log("Rang calculés : \n");
 
         for (L3NEW_TG_B9_Node node : this.nodesList) {
             System.out.print(String.format("%4s", node));
+            this.logger.log(String.format("%4s", node));
         }
 
         System.out.println();
+        this.logger.log("\n");
 
         for (L3NEW_TG_B9_Node node : this.nodesList) {
             System.out.print(String.format("%4d", node.getRank()));
+            this.logger.log(String.format("%4d", node.getRank()));
         }
 
         System.out.println("\n");
+        this.logger.log("\n\n");
     }
 
     public boolean isSchedulingGraph() {
@@ -355,13 +381,25 @@ public class L3NEW_TG_B9_Graph {
 
     public void computeCalendar() {
 
+        System.out.print(" - - - - - Calendrier - - - - - \n");
+        this.logger.log(" - - - - - Calendrier - - - - - \n");
+
         computeEarliestDate(this.originNodesListOnRank0.get(0));
         computeLatestDate(this.originNodesListOnRank0.get(0));
+        computeMargin();
+
+        System.out.println("Noeud  |  Date au plus tôt  |  Date au plus tard  |  Marge");
+        this.logger.log("Noeud  |  Date au plus tôt  |  Date au plus tard  |  Marge\n");
 
         for (L3NEW_TG_B9_Node node : this.nodesList) {
-            node.displayCalendar();
+            System.out.println(node.displayCalendar());
+            this.logger.log(node.displayCalendar() + "\n");
         }
 
+        System.out.println();
+        this.logger.log("\n");
+
+        this.logger.save();
     }
 
     private void computeEarliestDate(L3NEW_TG_B9_Node node) {
@@ -396,36 +434,10 @@ public class L3NEW_TG_B9_Graph {
         }
     }
 
-    //endregion
-
-    //region Getter
-
-    public int getNumberOfNode() {
-        return numberOfNode;
-    }
-
-    public int getNumberOfEdges() {
-        return numberOfEdges;
-    }
-
-    public ArrayList<L3NEW_TG_B9_Node> getNodesList() {
-        return nodesList;
-    }
-
-    //endregion
-
-    //region Setter
-
-    public void setNumberOfNode(int numberOfNode) {
-        this.numberOfNode = numberOfNode;
-    }
-
-    public void setNumberOfEdges(int numberOfEdges) {
-        this.numberOfEdges = numberOfEdges;
-    }
-
-    public void setNodesList(ArrayList<L3NEW_TG_B9_Node> nodesList) {
-        this.nodesList = nodesList;
+    private void computeMargin() {
+        for (L3NEW_TG_B9_Node node : this.nodesList) {
+            node.computeMargin();
+        }
     }
 
     //endregion
@@ -436,8 +448,6 @@ public class L3NEW_TG_B9_Graph {
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("\n - - - - - Graphe - - - - - \n");
-        stringBuilder.append("Nombre de sommet(s) : ").append(numberOfNode).append("\n");
-        stringBuilder.append("Nombre d'arc(s) : ").append(numberOfEdges).append("\n");
         stringBuilder.append("Origine   Poids   Destination").append("\n");
 
         for (L3NEW_TG_B9_Node node : this.nodesList) {

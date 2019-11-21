@@ -7,13 +7,14 @@ public class L3NEW_TG_B9_Node {
 
     //region Variables
 
-    private Integer label;
-    private Set<L3NEW_TG_B9_Node> listPredecessor;
-    private Set<L3NEW_TG_B9_Node> listSuccessor;
-    private HashMap<L3NEW_TG_B9_Node, Integer> listEdges;
+    private final Integer label;
+    private final Set<L3NEW_TG_B9_Node> listPredecessor;
+    private final Set<L3NEW_TG_B9_Node> listSuccessor;
+    private final HashMap<L3NEW_TG_B9_Node, Integer> listEdges;
     private int rank;
     private int earliestDate;
     private int latestDate;
+    private int margin;
 
     //endregion
 
@@ -106,8 +107,18 @@ public class L3NEW_TG_B9_Node {
         return stringBuilder.toString();
     }
 
-    public void displayCalendar() {
-        System.out.println("Node : " + this.getLabel() + " [ " + this.getEarliestDate() + " ; " + this.getLatestDate() + " ]");
+    public String displayCalendar() {
+        return String.format("%3d", this.getLabel()) +
+                String.format("%5s", "|") +
+                String.format("%11d", this.getEarliestDate()) +
+                String.format("%10s", "|") +
+                String.format("%12d", this.getLatestDate()) +
+                String.format("%10s", "|") +
+                String.format("%5d", this.margin);
+    }
+
+    public void computeMargin() {
+        this.margin = this.latestDate - this.earliestDate;
     }
 
     //endregion
@@ -150,24 +161,8 @@ public class L3NEW_TG_B9_Node {
         this.rank = rank;
     }
 
-    public void setListPredecessor(Set<L3NEW_TG_B9_Node> listPredecessor) {
-        this.listPredecessor = listPredecessor;
-    }
-
-    public void setListSuccessor(Set<L3NEW_TG_B9_Node> listSuccessor) {
-        this.listSuccessor = listSuccessor;
-    }
-
-    public void setListEdges(HashMap<L3NEW_TG_B9_Node, Integer> listEdges) {
-        this.listEdges = listEdges;
-    }
-
     public void setLatestDate(int latestDate) {
         this.latestDate = latestDate;
-    }
-
-    public void setLabel(Integer label) {
-        this.label = label;
     }
 
     public HashMap<L3NEW_TG_B9_Node, Integer> getListEdges() {

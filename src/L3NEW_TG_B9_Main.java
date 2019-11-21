@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class L3NEW_TG_B9_Main {
+class L3NEW_TG_B9_Main {
 
     //region Variables
 
@@ -25,7 +25,7 @@ public class L3NEW_TG_B9_Main {
         L3NEW_TG_B9_Graph graph = L3NEW_TG_B9_ImportGraph.importGraphProcedure();
 
         //Print the graph read
-        System.out.print(graph);
+        graph.print();
 
         //Print adjacency matrix
         graph.displayAdjacencyMatrix();
@@ -41,8 +41,6 @@ public class L3NEW_TG_B9_Main {
 
             //Check if it's a scheduling graph
             if (graph.isSchedulingGraph()) {
-
-                System.out.println("Scheduling Graph");
 
                 //Compute calendar
                 graph.computeCalendar();
